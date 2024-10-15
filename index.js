@@ -37,8 +37,7 @@ app.get(
     date = req.params.date;
     var dateValue = Number(date);
     var utcStamp = new Date(dateValue).toUTCString();
-    console.log(utcStamp);
-    console.log(dateValue);
+
     if (!isNaN(dateValue)) {
       res.json({ unix: dateValue, utc: utcStamp });
     } else {
