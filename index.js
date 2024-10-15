@@ -24,35 +24,36 @@ app.get("/api/hello", function (req, res) {
   res.json({ greeting: "hello API" });
 });
 
-app.get(
-  "/now",
-  function (req, res, next) {
-    req.time = new Date().toString();
-    next();
-  },
-  function (req, res) {
-    res.json({ time: req.time });
-  }
-);
-
 app.get("/api", (req, res) => {
   res.json({ message: `${new Date().toString()}` });
 });
 
-app.get("/api/:date", (req, res) => {
-  date = req.params.date;
-  var dateValue = new Date(date);
-  var dateString = new Date(date).toString();
-  var unixStamp = Math.floor(dateValue / 1000);
-  var utcStamp = new Date(date * 1000).toUTCString();
-  
-    if (dateString) {
-    res.json({ unix: unixStamp, utc: dateString });
-  } else {
-    res.json({ unix: date, utc: utcStamp });
-  }});
-
-  
+app.get(
+  "/api/:date",
+  (req, res, next) => {
+    date = req.params.date;
+    var dateValue = Number(date);
+    var utcStamp = new Date(dateValue).toUTCString();
+    console.log(utcStamp);
+    console.log(dateValue);
+    if (!isNaN(dateValue)) {
+      res.json({ unix: dateValue, utc: utcStamp });
+    } else {
+      next();
+    }
+  },
+  (req, res) => {
+    date = req.params.date;
+    var dateValue = new Date(date);
+    var utcStamp = new Date(date).toUTCString();
+    var unixStamp = Math.floor(dateValue);
+    if (!dateValue.getTime()) {
+      res.send({ error: "Invalid Date" });
+    } else {
+      res.json({ unix: unixStamp, utc: utcStamp });
+    }
+  }
+);
 
 // Listen on port set in environment variable or default to 3000
 var listener = app.listen(process.env.PORT || 3000, function () {
