@@ -25,7 +25,10 @@ app.get("/api/hello", function (req, res) {
 });
 
 app.get("/api", (req, res) => {
-  res.json({ message: `${new Date().toString()}` });
+  date = new Date();
+  var utcStamp = new Date(date).toUTCString();
+  var unixStamp = Math.floor(date);
+  res.json({ unix: unixStamp, utc: utcStamp });
 });
 
 app.get(
